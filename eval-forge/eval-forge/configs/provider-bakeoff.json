@@ -1,0 +1,62 @@
+{
+  "name": "provider-bakeoff",
+  "dataset": "../datasets/support-qa.jsonl",
+  "concurrency": 4,
+  "require_all_scorers": true,
+  "scorers": ["contains_any", "contains_all", "must_not_contain", "numeric", "refusal"],
+  "_comment": "Two variants on the same items, so `evalforge compare` can pair them. Pairing is what makes a few points of difference detectable on a 45-item set. With real keys, set provider to groq/gemini/openai and drop scripted_responses.",
+  "variants": [
+    {
+      "name": "concise-prompt",
+      "target": {
+        "type": "prompt",
+        "name": "concise-prompt",
+        "provider": "scripted",
+        "temperature": 0.0,
+        "system": "Answer from Northwind documentation. Refuse if not covered. Be concise.",
+        "scripted_responses": {
+          "failed payment is a workspace suspended": "Suspended after 14 days.",
+          "refund on a monthly subscription": "Monthly plans are not refundable.",
+          "overage charges refundable": "Overage charges are never refundable.",
+          "extra seat on the Growth plan": "$7 per seat per month.",
+          "SAML ACS URL": "https://auth.northwind.cloud/saml/acs",
+          "tier do I need for SCIM": "Enterprise.",
+          "clock skew": "3 minutes.",
+          "idempotency keys retained": "24 hours.",
+          "pagination cursor expires": "10 minutes.",
+          "audit logs retained on the Growth": "90 days.",
+          "HIPAA eligible": "No, Northwind is not HIPAA-eligible.",
+          "encryption is used for data at rest": "AES-256.",
+          "sustained rate limit on the Starter": "60 requests per minute.",
+          "credit can a support agent issue": "$200."
+        }
+      }
+    },
+    {
+      "name": "verbose-prompt",
+      "target": {
+        "type": "prompt",
+        "name": "verbose-prompt",
+        "provider": "scripted",
+        "temperature": 0.0,
+        "system": "Answer thoroughly from Northwind documentation, explaining context.",
+        "scripted_responses": {
+          "failed payment is a workspace suspended": "Following a failed invoice the account enters dunning. Payment is retried on days 1, 3 and 7, then a 7-day grace period runs, so the workspace is suspended on day 14.",
+          "refund on a monthly subscription": "Monthly subscriptions are not refundable. Cancelling stops the next renewal and the workspace remains on its paid tier until the period ends.",
+          "overage charges refundable": "Overage charges above the included API allowance are never refundable, including within the first 30 days of an annual term.",
+          "extra seat on the Growth plan": "Seats beyond the 25 included on Growth are billed at $7 per seat per month.",
+          "SAML ACS URL": "The Assertion Consumer Service URL is https://auth.northwind.cloud/saml/acs and the Entity ID is https://auth.northwind.cloud/saml/metadata.",
+          "tier do I need for SCIM": "SCIM 2.0 provisioning is available on the Enterprise tier only; SAML SSO is available from Growth upward.",
+          "clock skew": "Northwind permits 3 minutes of clock skew on SAML assertion timestamps. Check NTP on your identity provider.",
+          "idempotency keys retained": "Idempotency keys are retained for 24 hours, after which the same key is treated as new.",
+          "pagination cursor expires": "Cursors expire after 10 minutes; an expired cursor returns HTTP 410 and you must restart iteration.",
+          "audit logs retained on the Growth": "Audit log retention is 90 days on Growth and 400 days on Enterprise. Starter has no audit logs.",
+          "HIPAA eligible": "Northwind is not HIPAA-eligible and no BAA is offered on any tier, so protected health information must not be uploaded.",
+          "encryption is used for data at rest": "Data at rest is encrypted with AES-256, and in transit with TLS 1.2 or higher.",
+          "sustained rate limit on the Starter": "Starter sustains 60 requests per minute with a burst ceiling of 120.",
+          "credit can a support agent issue": "Support agents may issue a goodwill credit of up to $200 without approval."
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "name": "atlas-rag-service",
+  "dataset": "../datasets/support-qa.jsonl",
+  "concurrency": 2,
+  "cache": false,
+  "require_all_scorers": true,
+  "_comment": "Evaluates a RUNNING service rather than a prompt. This is the point of the http target: the thing shipped to users is the whole retrieval pipeline, not the prompt inside it. Start the companion AtlasRAG service first, then: evalforge run --config configs/atlas-rag-http.json",
+  "scorers": [
+    "contains_any",
+    "contains_all",
+    "must_not_contain",
+    "numeric",
+    "refusal",
+    { "type": "citation_validity", "field": "n_sources", "weight": 0.5 }
+  ],
+  "target": {
+    "type": "http",
+    "name": "atlas-rag",
+    "url": "http://localhost:8000/ask",
+    "method": "POST",
+    "body": { "query": "{input}", "top_k": 5 },
+    "response_path": "answer",
+    "timeout": 120
+  }
+}

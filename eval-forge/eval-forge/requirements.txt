@@ -1,0 +1,4 @@
+# The statistics are stdlib only (bootstrapping needs a RNG and arithmetic;
+# depending on scipy for this would be the only heavy dependency here).
+# httpx is needed for live providers and the HTTP target.
+httpx>=0.27
